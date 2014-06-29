@@ -1,39 +1,39 @@
 @echo off
 
-REM РРЅСЃС‚СЂСѓРєС†РёСЏ:
+REM Инструкция:
 
-REM Р­С‚РѕС‚ С„Р°Р№Р» РЅСѓР¶РЅРѕ СЂР°Р·РјРµСЃС‚РёС‚СЊ РІ РєР°РєРѕР№-РЅРёР±СѓРґСЊ РїР°РїРєРµ РЅР°РїСЂРёРјРµСЂ "C:\cmdtools" Рё
-REM РґРѕР±Р°РІРёС‚СЊ СЌС‚РѕС‚ РїСѓС‚СЊ РІ РїРµСЂРµРјРµРЅРЅС‹Рµ СЃСЂРµРґС‹ Windows. Р­С‚Рѕ РїРѕР·РІРѕР»РёС‚ Р·Р°РїСѓСЃРєР°С‚СЊ РµРіРѕ РІ
-REM Р»СЋР±РѕР№ РїР°РїРєРµ.
+REM Этот файл нужно разместить в какой-нибудь папке например "C:\cmdtools" и
+REM добавить этот путь в переменные среды Windows. Это позволит запускать его в
+REM любой папке.
 
-REM РќСѓР¶РЅРѕ РїРµСЂРµР№С‚Рё РІ РЅСѓР¶РЅСѓСЋ РїР°РїРєСѓ (РЅР°РїСЂРёРјРµСЂ "my-addon-name")
-REM РЅР°РїСЂРёРјРµСЂ С‡РµСЂРµР· РїСЂРѕРІРѕРґРЅРёРє Рё Р·Р°Р¶Р°РІ "Shift" С‰С‘Р»РєРЅСѓС‚СЊ РїСЂР°РІРѕР№ РєРЅРѕРїРєРѕР№ РјС‹С€Рё
-REM Рё РІС‹Р±СЂР°С‚СЊ "РћС‚РєСЂС‹С‚СЊ РѕРєРЅРѕ РєРѕРјР°РЅРґ". Р’ РїРѕСЏРІРёРІС€СѓСЋСЃСЏ РєРѕРЅСЃРѕР»СЊ РІРІРµСЃС‚Рё (Р±РµР· РєР°РІС‹С‡РµРє):
+REM Нужно перейти в нужную папку (например "my-addon-name")
+REM например через проводник и зажав "Shift" щёлкнуть правой кнопкой мыши
+REM и выбрать "Открыть окно команд". В появившуюся консоль ввести (без кавычек):
 
-REM "makexpi" - СЃРѕР·РґР°СЃС‚ РґРѕРїРѕР»РЅРµРЅРёРµ РІ С‚РµРєСѓС‰РµР№ РїР°РїРєРµ РёР· С„Р°Р№Р»РѕРІ РІ С‚РµРєСѓС‰РµР№ РїР°РїРєРµ
-REM РєРѕС‚РѕСЂС‹Рµ РµСЃС‚СЊ РІ СЃРїРёСЃРєРµ РїРµСЂРµРјРµРЅРЅРѕР№ "_files".
-REM РРјСЏ С„Р°Р№Р»Р° Р±СѓРґРµС‚ РІ С‚Р°РєРѕРј РІРёРґРµ: "my-addon-name-0.2.0-2014-06-20.xpi" С‚.Рµ
-REM РёРјСЏ РїР°РїРєРё, РІРµСЂСЃРёСЏ Рё С‚РµРєСѓС‰Р°СЏ РґР°С‚Р°.
+REM "makexpi" - создаст дополнение в текущей папке из файлов в текущей папке
+REM которые есть в списке переменной "_files".
+REM Имя файла будет в таком виде: "my-addon-name-0.2.0-2014-06-20.xpi" т.е
+REM имя папки, версия и текущая дата.
 
-REM "makexpi run" - СЃРѕР·РґР°СЃС‚ РїСЂРѕС„РёР»СЊ РІРѕ РІСЂРµРјРµРЅРЅРѕР№ РїР°РїРєРµ Windows РІ РЅС‘Рј СЃРѕР·РґР°СЃС‚
-REM С„Р°Р№Р» РЅР°СЃС‚СЂРѕРµРє Рё РґРѕРїРѕР»РЅРµРЅРёРµ. Р­С‚Рѕ РЅРµ Р·Р°С‚СЂРѕРЅРµС‚ РґРѕРїРѕР»РЅРµРЅРёРµ РІ С‚РµРєСѓС‰РµР№ РїР°РїРєРµ.
+REM "makexpi run" - создаст профиль во временной папке Windows в нём создаст
+REM файл настроек и дополнение. Это не затронет дополнение в текущей папке.
 
-REM РїСЂРµРґРѕС‚РІСЂР°С‚РёС‚СЊ Р·Р°РїСѓСЃРє РїСЂРё РєР»РёРєРµ РїРѕ С„Р°Р№Р»Сѓ
+REM предотвратить запуск при клике по файлу
 if "%~dp0"=="%cd%\" (
 	title %cd% - makeXPI
 	echo.
-	echo вЂЎВ Р‡РіР±Р„В РІРј Сћ Р‡В Р‡Р„Тђ В¤В®Р‡В®В«В­ТђВ­РЃРї Р·ТђР°ТђВ§ "makexpi".
-	rem Р—Р°РїСѓСЃРєР°С‚СЊ РІ РїР°РїРєРµ РґРѕРїРѕР»РЅРµРЅРёСЏ С‡РµСЂРµР· "makexpi".
+	echo ‡ ЇгбЄ вм ў Ї ЇЄҐ ¤®Ї®«­Ґ­Ёп зҐаҐ§ "makexpi".
+	rem Запускать в папке дополнения через "makexpi".
 	rem Run it in addon source folder.
 	ping -n 5 127.0.0.1 >nul
 	goto :eof
 )
 
-REM РІ РїР°РїРєРµ РґРѕР»Р¶РµРЅ Р±С‹С‚СЊ install.rdf
+REM в папке должен быть install.rdf
 if not exist "%cd%\install.rdf" (
 	echo.
-	echo Р‹РёРЃРЋР„В : install.rdf В­Тђ В­В В©В¤ТђВ­.
-	rem РћС€РёР±РєР°: install.rdf РЅРµ РЅР°Р№РґРµРЅ.
+	echo ЋиЁЎЄ : install.rdf ­Ґ ­ ©¤Ґ­.
+	rem Ошибка: install.rdf не найден.
 	rem Error: install.rdf not found!
 	goto :eof
 )
@@ -42,23 +42,23 @@ rem enabledelayedexpansion
 setlocal enableextensions
 if errorlevel 1 (
 	echo.
-	echo Р‹РёРЃРЋР„В : В­Тђ СћВ®В§В¬В®В¦В­В® СћР„В«РѕР·РЃРІРј "enableextensions".
-	rem РћС€РёР±РєР°: РЅРµ РІРѕР·РјРѕР¶РЅРѕ РІРєР»СЋС‡РёС‚СЊ "enableextensions".
+	echo ЋиЁЎЄ : ­Ґ ў®§¬®¦­® ўЄ«озЁвм "enableextensions".
+	rem Ошибка: не возможно включить "enableextensions".
 	rem Error: Can't enable "enableextensions".
 	exit /b 1
 )
 cls
 
-rem Р·Р°РїРѕРјРёРЅС‚СЊ РєР°С‚Р°Р»РѕРє РІ РєРѕС‚РѕСЂРѕРј Р±С‹Р»Р° РІС‹РїРѕР»РЅРµРЅР° РєРѕРјР°РЅРґР°
+rem запоминть каталок в котором была выполнена команда
 set rundir=%cd%
 
-rem РїРµСЂРµР№С‚Рё РІ РєР°С‚Р°Р»РѕРі РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ СЌС‚РѕС‚ cmd С„Р°Р№Р»
+rem перейти в каталог в котором находится этот cmd файл
 cd /d "%~dp0"
 
-rem ==================== РџРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё РґР»СЏ РїСЂРѕРґРѕР»Р¶РµРЅРёСЏ =================
+rem ==================== Получение информации для продолжения =================
 
-REM РїСѓС‚СЊ Рє СЃРІРѕРµРјСѓ Р°СЂС…РёРІР°С‚РѕСЂСѓ 7-Zip (РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РІ РєР°РІС‹С‡РєР°С…)
-REM РёР»Рё 7za.exe РІ С‚РѕР№ Р¶Рµ РїР°РїРєРµ С‡С‚Рѕ Рё СЌС‚РѕС‚ С„Р°Р№Р»
+REM путь к своему архиватору 7-Zip (обязательно в кавычках)
+REM или 7za.exe в той же папке что и этот файл
 rem -------------------------------------------
 set archis=
 rem -------------------------------------------
@@ -71,8 +71,8 @@ if exist "%archis%" (
 	goto archcomlp1
 )
 echo.
-echo вЂљР» РіР„В В§В В«РЃ В­Тђ СћТђР°В­Р»В© Р‡РіРІРј Р„ В Р°РµРЃСћВ РІВ®Р°Рі.
-rem Р’С‹ СѓРєР°Р·Р°Р»Рё РЅРµ РІРµСЂРЅС‹Р№ РїСѓС‚СЊ Рє Р°СЂС…РёРІР°С‚РѕСЂСѓ.
+echo ‚л гЄ § «Ё ­Ґ ўҐа­л© Їгвм Є  аеЁў в®аг.
+rem Вы указали не верный путь к архиватору.
 rem You set wrong path to archivator.
 echo.
 ping -n 3 127.0.0.1 >nul
@@ -80,14 +80,14 @@ goto :eof
 
 :autoarch
 
-rem РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ 7za.exe
+rem использовать 7za.exe
 if exist "7za.exe" (
 	set archis="%~dp07za.exe"
 	set archby=7za
 	goto archcomlp1
 )
 
-rem РїРѕР»СѓС‡РёС‚СЊ РїСѓС‚СЊ С‡РµСЂРµР· СЂРµРµСЃС‚СЂ
+rem получить путь через реестр
 set archPath=
 for /f "tokens=2*" %%a in ('reg query "HKCU\Software\7-Zip" /v path ^| find "REG_SZ"') do set archPath=%%b
 if "%archPath:~-1%"=="\" set archPath=%archPath:~0,-1%
@@ -97,7 +97,7 @@ if exist "%archPath%\7z.exe" (
 	goto archcomlp1
 )
 
-rem РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊ СѓСЃС‚Р°РЅРѕРІР»РµРЅРЅС‹Р№ 7-Zip
+rem использовать установленный 7-Zip
 if exist "%PROGRAMFILES%\7-Zip" (
 	set archis="%PROGRAMFILES%\7-Zip\7z.exe"
 	set archby=programfiles
@@ -110,7 +110,7 @@ if exist "%PROGRAMFILES(x86)%\7-Zip" (
 	goto archcomlp1
 )
 
-rem РµСЃР»Рё 7z РїСЂРѕРїРёСЃР°РЅ РІ path
+rem если 7z прописан в path
 7z a "%temp%\%~nx0.7z" -aoa "%~dp0%~nx0"
 if not errorlevel 1 (
 	set archis=7z
@@ -118,7 +118,7 @@ if not errorlevel 1 (
 	set archby=path
 	goto archcomlp1
 )
-rem РґР»СЏ (РµСЃР»Рё 7z РїСЂРѕРїРёСЃР°РЅ РІ path)
+rem для (если 7z прописан в path)
 cls
 echo Archivator not found!
 ping -n 5 127.0.0.1 >nul
@@ -127,8 +127,8 @@ goto :eof
 :archcomlp1
 
 echo.
-echo Р‚Р°РµРЃСћВ РІВ®Р° В­В В©В¤ТђВ­ "%archby%":
-rem РђСЂС…РёРІР°С‚РѕСЂ РЅР°Р№РґРµРЅ:
+echo ЂаеЁў в®а ­ ©¤Ґ­ "%archby%":
+rem Архиватор найден:
 rem Archivator by "%archby%":
 echo %archis%
 echo.
@@ -137,8 +137,8 @@ set day=%DATE:~0,2%
 set month=%DATE:~3,2%
 set year=%DATE:~6,4%
 
-REM РµСЃР»Рё С‡Р°СЃ РјРµРЅСЊС€Рµ 10 С‚Рѕ Рє РЅРµРјСѓ РґРѕР±Р°РІР»СЏРµС‚СЃСЏ РїСЂРѕР±РµР», Р° РЅРµ РЅРѕР»СЊ
-REM РїРѕСЌС‚РѕРјСѓ РµРіРѕ РЅСѓР¶РЅРѕ Р·Р°РјРµРЅРёС‚СЊ
+REM если час меньше 10 то к нему добавляется пробел, а не ноль
+REM поэтому его нужно заменить
 REM for /f "delims= " %%x in ("%time%") do set timeNow=0%%x
 set timeNow=%TIME: =0%
 set hour=%timeNow:~0,2%
@@ -154,7 +154,7 @@ if "%isRun%"=="run" (
 )
 
 REM ----------------------------------------------------------------------------
-REM РѕР±С‰РёРµ РїР°СЂР°РјРµС‚СЂС‹ Рё "С„СѓРЅРєС†РёРё"
+REM общие параметры и "функции"
 
 :packXPI
 setlocal
@@ -163,8 +163,8 @@ set _out_xpi=%1
 start "7zip" /b /wait /low %archis% a -tzip -mx9 -mfb=258 -mpass=15 -- %_out_xpi% %_files%
 if errorlevel 1 (
 	echo.
-	echo Р‹РёРЃРЋР„В : В Р°РµРЃСћВ Р¶РЃРї В­Тђ РіВ¤В В«В Р±Рј.
-	rem РћС€РёР±РєР°: Р°СЂС…РёРІР°С†РёСЏ РЅРµ СѓРґР°Р»Р°СЃСЊ.
+	echo ЋиЁЎЄ :  аеЁў жЁп ­Ґ г¤ « бм.
+	rem Ошибка: архивация не удалась.
 	rem Error: archivation failed.
 	echo Error code: %errorlevel%.
 	echo.
@@ -182,8 +182,8 @@ exit /b 0
 :packAddon
 echo.
 echo ===========================================================================
-echo - вЂВ®В§В¤В РІРј В¤В®Р‡В®В«В­ТђВ­РЃТђ.
-rem РЎРѕР·РґР°С‚СЊ РґРѕРїРѕР»РЅРµРЅРёРµ.
+echo - ‘®§¤ вм ¤®Ї®«­Ґ­ЁҐ.
+rem Создать дополнение.
 rem Make addon.
 echo ===========================================================================
 echo.
@@ -218,7 +218,7 @@ if not "%addonVersion%"=="" (
 	set _out=%currentdir%-%addonVersion%-%curdate%.xpi
 )
 
-rem РІСЂРµРјРµРЅРЅС‹Р№ С„Р°Р№Р»Р° РІРѕ РІСЂРµРјРµРЅРЅРѕР№ РїР°РїРєРµ Windows
+rem временный файла во временной папке Windows
 set _out_tmp=%temp%\%_out%.tmp
 
 call :packXPI "%_out_tmp%"
@@ -230,8 +230,8 @@ if "%errorlevel%"=="0" goto noUpdateAddonXPI
 if "%errorlevel%"=="1" goto updateAddonXPI
 
 echo.
-echo Р‹РёРЃРЋР„В  Р‡Р°РЃ Р±Р°В СћВ­ТђВ­РЃРЃ.
-rem РћС€РёР±РєР° РїСЂРё СЃСЂР°РІРЅРµРЅРёРё.
+echo ЋиЁЎЄ  ЇаЁ ба ў­Ґ­ЁЁ.
+rem Ошибка при сравнении.
 rem Error: compare.
 echo.
 echo _out: %_out%
@@ -242,8 +242,8 @@ goto :eof
 
 :noUpdateAddonXPI
 echo ========================================
-echo ==^> в‚¬В§В¬ТђВ­ТђВ­РЃВ© В­ТђРІ!
-rem РР·РјРµРЅРµРЅРёР№ РЅРµС‚!
+echo ==^> €§¬Ґ­Ґ­Ё© ­Ґв!
+rem Изменений нет!
 rem No changes!
 echo ========================================
 del "%_out_tmp%"
@@ -251,16 +251,16 @@ goto :eof
 
 :updateAddonXPI
 echo ========================================
-echo ==^> в‚¬В§В¬ТђВ­ТђВ­РЃРї, В®РЋВ­В®СћВ«ТђВ­РЃТђ...
-rem РР·РјРµРЅРµРЅРёСЏ, РѕР±РЅРѕРІР»РµРЅРёРµ...
+echo ==^> €§¬Ґ­Ґ­Ёп, ®Ў­®ў«Ґ­ЁҐ...
+rem Изменения, обновление...
 rem Changed, update...
 echo ========================================
 goto moveAddonXPI
 
 :skipCompare
 echo ========================================
-echo ==^> вЂВ®В§В¤В В­В®.
-rem РЎРѕР·РґР°РЅРѕ.
+echo ==^> ‘®§¤ ­®.
+rem Создано.
 rem Created.
 echo ========================================
 
@@ -272,14 +272,14 @@ goto :eof
 :packAndRun
 echo.
 echo ===========================================================================
-echo - вЂВ®В§В¤В РІРј В¤В®Р‡В®В«В­ТђВ­РЃТђ РЃ В§В Р‡РіР±РІРЃРІРј Firefox Р± В­РЃВ¬.
-rem РЎРѕР·РґР°С‚СЊ РґРѕРїРѕР»РЅРµРЅРёРµ Рё Р·Р°РїСѓСЃС‚РёС‚СЊ Firefox СЃ РЅРёРј.
+echo - ‘®§¤ вм ¤®Ї®«­Ґ­ЁҐ Ё § ЇгбвЁвм Firefox б ­Ё¬.
+rem Создать дополнение и запустить Firefox с ним.
 rem Make addon and run Firefox with it.
 echo ===========================================================================
 echo.
 
 REM ----------------------------------------------------------------------------
-REM СЃРѕР·РґР°РЅРёРµ РїСЂРѕС„РёР»СЏ РІРѕ РІСЂРµРјРµРЅРЅРѕР№ РїР°РїРєРµ
+REM создание профиля во временной папке
 
 cd /d %temp%
 
@@ -288,8 +288,8 @@ set runTempProf=makeXPIrun%year%%month%%day%%hour%%minute%%second%
 md %runTempProf%
 if not errorlevel 1 goto cdInRunTempProf
 echo.
-echo Р‹РёРЃРЋР„В  Р‡Р°РЃ Р±В®В§В¤В В­РЃРЃ СћР°ТђВ¬ТђВ­В­В® Р‡Р°В®РґРЃВ«Рї.
-rem РћС€РёР±РєР° РїСЂРё СЃРѕР·РґР°РЅРёРё РІСЂРµРјРµРЅРЅРѕ РїСЂРѕС„РёР»СЏ.
+echo ЋиЁЎЄ  ЇаЁ б®§¤ ­ЁЁ ўаҐ¬Ґ­­® Їа®дЁ«п.
+rem Ошибка при создании временно профиля.
 rem Error: runTempProf.
 echo.
 echo runTempProf: %runTempProf%
@@ -300,14 +300,14 @@ goto :eof
 :cdInRunTempProf
 cd %runTempProf%
 echo.
-echo вЂљР°ТђВ¬ТђВ­В­Р»В© Р‡Р°В®РґРЃВ«Рј Р±В®В§В¤В В­:
-rem Р’СЂРµРјРµРЅРЅС‹Р№ РїСЂРѕС„РёР»СЊ СЃРѕР·РґР°РЅ:
+echo ‚аҐ¬Ґ­­л© Їа®дЁ«м б®§¤ ­:
+rem Временный профиль создан:
 rem Temporary profile created:
 echo "%temp%\%runTempProf%"
 
 md extensions
 
-REM РЅР°СЃС‚СЂРѕР№РєРё user.js РІР·СЏС‚С‹Рµ РёР· Addon SDK 1.6
+REM настройки user.js взятые из Addon SDK 1.6
 echo. > user.js
 
 echo user_pref("devtools.errorconsole.enabled", true);>> user.js
@@ -343,21 +343,21 @@ echo user_pref("app.update.enabled", false);>> user.js
 echo user_pref("urlclassifier.updateinterval", 172800);>> user.js
 echo user_pref("startup.homepage_welcome_url", "about:blank");>> user.js
 
-rem РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕ
-rem РїРµСЂРµРІРµСЃС‚Рё РїР»Р°РіРёРЅС‹ РІ СЂРµР¶РёРј "click to play"
+rem дополнительно
+rem перевести плагины в режим "click to play"
 echo. >> user.js
 echo user_pref("plugin.default.state", 1);>> user.js
 echo user_pref("plugin.state.flash", 1);>> user.js
-REM РѕС‚РєР»СЋС‡РёС‚СЊ Р·РЅР°РєРѕРјСЃС‚РІРѕ СЃ РЅРѕРІРёРЅРєР°РјРё
+REM отключить знакомство с новинками
 echo user_pref("browser.uitour.enabled", false);>> user.js
 
 REM ----------------------------------------------------------------------------
-REM СЃРѕР·РґР°РЅРёРµ РґРѕРїРѕР»РЅРµРЅРёСЏ
+REM создание дополнения
 
 cd /d "%rundir%"
 
-REM С‚.Рє РІ install.rdf РєСЂРѕРјРµ ID РґРѕРїРѕР»РЅРµРЅРёСЏ РµСЃС‚СЊ РµС‰С‘ Рё ID РїСЂРѕРіСЂР°РјРј СЃ РєРѕС‚РѕСЂС‹РјРё
-REM СЃРѕРІРјРµСЃС‚РёРјРѕ СЌС‚Рѕ РґРѕРїРѕР»РЅРµРЅРёРµ. РџРµСЂРІС‹Р№ РєР°Рє РїСЂР°РІРёР»Рѕ Рё РµСЃС‚СЊ РЅСѓР¶РЅС‹Р№ ID.
+REM т.к в install.rdf кроме ID дополнения есть ещё и ID программ с которыми
+REM совместимо это дополнение. Первый как правило и есть нужный ID.
 set addonID=
 for /f "tokens=3 delims=<>" %%a in (
 	'type "install.rdf"^|find /i "<em:id>"'
@@ -404,12 +404,12 @@ endlocal & set addonUnpack=%_addonUnpack%
 :addonUnpackDone
 
 if not "%addonUnpack%"=="true" goto addonUnpackFalse
-rem РµСЃР»Рё СЌС‚Рѕ РґРѕРїРѕР»РЅРµРЅРёРµ СЃ РїРµСЂРµР·Р°РїСѓСЃРєРѕРј
+rem если это дополнение с перезапуском
 start "7zip" /b /wait /low %archis% x "%temp%\%runTempProf%\extensions\%addonID%.xpi" -o"%temp%\%runTempProf%\extensions\%addonID%"
 if errorlevel 1 (
 	echo.
-	echo Р‹РёРЃРЋР„В : Р°В Р±Р‡В Р„В®СћР„В  В­Тђ РіВ¤В В«В Р±Рј.
-	rem РћС€РёР±РєР°: СЂР°СЃРїР°РєРѕРІРєР° РЅРµ СѓРґР°Р»Р°СЃСЊ.
+	echo ЋиЁЎЄ : а бЇ Є®ўЄ  ­Ґ г¤ « бм.
+	rem Ошибка: распаковка не удалась.
 	rem Error: extraction failed.
 	echo Error code: %errorlevel%.
 	echo.
@@ -432,17 +432,17 @@ echo addonUnpack: "%addonUnpack%"
 echo ====================
 
 REM ----------------------------------------------------------------------------
-REM Р·Р°РїСѓСЃРє firefox
+REM запуск firefox
 rem ============================================================================
 set firefox=
 rem ============================================================================
-REM РёР»Рё СЃРІРѕР№ РїСѓС‚СЊ Рє С„Р°Р№Р»Сѓ firefox.exe (РѕР±СЏР·Р°С‚РµР»СЊРЅРѕ РІ РєР°РІС‹С‡РєР°С…)
-REM РЅР°РїСЂРёРјРµСЂ
+REM или свой путь к файлу firefox.exe (обязательно в кавычках)
+REM например
 REM set firefox="F:\PAP\PortableApps\FirefoxPortableNightly64\App\core\firefox.exe"
 
-REM РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅС‹Р№ РїР°СЂР°РјРµС‚СЂ
+REM дополнительный параметр
 REM makexpi run beta
-REM РёР»Рё РІ РєР°РІС‹С‡РєР°С… РїСѓС‚СЊ Рє firefox.exe
+REM или в кавычках путь к firefox.exe
 REM makexpi run "F:\PAP\PortableApps\FirefoxPortableNightly\App\core\firefox.exe"
 set firefox_bin=%2
 
@@ -457,8 +457,8 @@ set firefoxRegPath=HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\fire
 reg query "%firefoxRegPath%" > nul
 if errorlevel 1 (
 	echo.
-	echo Р‹РёРЃРЋР„В : В­Тђ В­В В©В¤ТђВ­ Firefox!
-	rem РћС€РёР±РєР°: РЅРµ РЅР°Р№РґРµРЅ Firefox!
+	echo ЋиЁЎЄ : ­Ґ ­ ©¤Ґ­ Firefox!
+	rem Ошибка: не найден Firefox!
 	rem Firefox not installed?
 	goto cleanRunTempProf
 )
@@ -469,8 +469,8 @@ set firefox="%firefoxPath%\firefox.exe"
 goto checkIsExistFirefox
 
 :getFirefoxParam2
-REM Р·РґРµСЃС‚СЊ РЅСѓР¶РЅРѕ РІС‹СЃС‚Р°РІРёС‚СЊ СЃРІРѕРё РїСѓС‚Рё Рє С„Р°Р№Р»Р°Рј РµСЃР»Рё РѕРЅРё РµСЃС‚СЊ
-REM РёР»Рё РґРѕР±Р°РІРёС‚СЊ РµС‰С‘
+REM здесть нужно выставить свои пути к файлам если они есть
+REM или добавить ещё
 if "%firefox_bin%"=="esr" (
 	set firefox="F:\PAP\PortableApps\FirefoxPortableESR\App\Firefox\firefox.exe"
 	goto checkIsExistFirefox
@@ -508,8 +508,8 @@ goto startFirefox
 :checkIsExistFirefox
 if not exist %firefox% (
 	echo.
-	echo Р‹РёРЃРЋР„В : %firefox% В­Тђ В­В В©В¤ТђВ­!
-	rem РћС€РёР±РєР°: %firefox% РЅРµ РЅР°Р№РґРµРЅ!
+	echo ЋиЁЎЄ : %firefox% ­Ґ ­ ©¤Ґ­!
+	rem Ошибка: %firefox% не найден!
 	rem Error: %firefox% not found!
 	goto cleanRunTempProf
 )
@@ -517,15 +517,15 @@ if not exist %firefox% (
 :startFirefox
 
 echo.
-echo РЏРіРІРј Р„ Firefox:
-rem РџСѓС‚СЊ Рє Firefox:
+echo Џгвм Є Firefox:
+rem Путь к Firefox:
 rem Firefox path:
 echo %firefox%
 echo.
 
-REM РµСЃР»Рё РІ С‚РѕРј Р¶Рµ РєР°С‚Р°Р»РѕРіРµ РІ РєРѕС‚РѕСЂРѕРј РЅР°С…РѕРґРёС‚СЃСЏ makeXPI РµСЃС‚СЊ Console Redirector
-REM С‚Рѕ РІС‹РІРѕРґ РІ РєРѕРЅСЃРѕР»СЊ Р±СѓРґРµС‚ С‡РµСЂРµР· РЅРµРіРѕ. РРЅР°С‡Рµ РјРѕР¶РЅРѕ РґРѕР±Р°РІРёС‚СЊ -console Рє
-REM РїР°СЂР°РјРµС‚СЂР°Рј Рё РїСЂРё Р·Р°РїСѓСЃРєРµ РїРѕСЏРІРёС‚СЃСЏ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅР°СЏ РєРѕРЅСЃРѕР»СЊ Firefox
+REM если в том же каталоге в котором находится makeXPI есть Console Redirector
+REM то вывод в консоль будет через него. Иначе можно добавить -console к
+REM параметрам и при запуске появится дополнительная консоль Firefox
 REM https://developer.mozilla.org/en-US/docs/Web/API/Window.dump
 if exist "%~dp0Console Redirector\Console Redirector.exe" goto ConsoleRedirector
 start "Firefox" /b /wait %firefox% -no-remote -profile "%temp%\%runTempProf%"
@@ -546,17 +546,17 @@ echo.
 
 :cleanRunTempProf
 ping -n 3 127.0.0.1 >nul
-REM СѓРґР°Р»РёС‚СЊ РІСЂРµРјРµРЅРЅС‹Р№ РїСЂРѕС„РёР»СЊ РїРѕСЃР»Рµ РІС‹С…РѕРґР° РёР· firefox
+REM удалить временный профиль после выхода из firefox
 rd /s /q "%temp%\%runTempProf%"
 if errorlevel 1 (
 	echo.
-	echo Р‹РёРЃРЋР„В  Р‡Р°РЃ РіВ¤В В«ТђВ­РЃРЃ СћР°ТђВ¬ТђВ­В­В®Р€В® Р‡Р°В®РґРЃВ«Рї.
-	rem РћС€РёР±РєР° РїСЂРё СѓРґР°Р»РµРЅРёРё РІСЂРµРјРµРЅРЅРѕРіРѕ РїСЂРѕС„РёР»СЏ.
+	echo ЋиЁЎЄ  ЇаЁ г¤ «Ґ­ЁЁ ўаҐ¬Ґ­­®Ј® Їа®дЁ«п.
+	rem Ошибка при удалении временного профиля.
 	rem Error: temporary profile remove.
 ) else (
 	echo.
-	echo вЂљР°ТђВ¬ТђВ­В­Р»В© Р‡Р°В®РґРЃВ«Рј РіВ¤В В«СЃВ­.
-	rem Р’СЂРµРјРµРЅРЅС‹Р№ РїСЂРѕС„РёР»СЊ СѓРґР°Р»С‘РЅ.
+	echo ‚аҐ¬Ґ­­л© Їа®дЁ«м г¤ «с­.
+	rem Временный профиль удалён.
 	rem The temporary profile was removed.
 )
 
