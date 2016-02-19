@@ -81,6 +81,11 @@ goto :eof
 
 :initInstallRDF
 echo     Init new addon:
+
+if "%isWE%"=="rdf2" (
+	goto initInstallRDF2
+)
+
 echo ^<?xml version="1.0"?^>>install.rdf
 echo ^<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#">>install.rdf
 echo 	xmlns:em="http://www.mozilla.org/2004/em-rdf#"^>>>install.rdf
@@ -103,6 +108,33 @@ echo 		^</em:targetApplication^>>>install.rdf
 echo 	^</Description^>>>install.rdf
 echo ^</RDF^>>>install.rdf
 
+goto doneInstallRDF
+
+:initInstallRDF2
+(
+echo ^<?xml version="1.0"?^>
+echo ^<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
+echo 		xmlns:NC="http://home.netscape.com/NC-rdf#"
+echo 		xmlns:RDF="http://www.w3.org/1999/02/22-rdf-syntax-ns#"^>
+echo 	^<RDF:Description RDF:about="urn:mozilla:install-manifest"
+echo 		em:id="testXPI@testXPI.addons.mozilla.org"
+echo 		em:version="0.0.1"
+echo 		em:name="testXPI"
+echo 		em:creator="testXPI"
+echo 		em:description="testXPI."
+echo 		em:type="2"
+echo 		em:bootstrap="true"^>
+echo 		^<!-- Firefox --^>
+echo 		^<em:targetApplication^>
+echo 			^<RDF:Description em:id="{ec8030f7-c20a-464f-9b0e-13a3a9e97384}"
+echo 				em:minVersion="24.0"
+echo 				em:maxVersion="42.0" /^>
+echo 		^</em:targetApplication^>
+echo 	^</RDF:Description^>
+echo ^</RDF:RDF^>
+)>install.rdf
+
+:doneInstallRDF
 if exist "%cd%\install.rdf" (
 	echo install.rdf ^(template^) was created!
 ) else (
