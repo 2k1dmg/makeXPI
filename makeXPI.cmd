@@ -31,6 +31,7 @@ if "%~dp0"=="%cd%\" (
 
 REM создать шаблон дополнения
 set isInit=%1
+set isWE=%2
 if not "%isInit%"=="init" (
 	goto tryToUseExists
 )
@@ -41,6 +42,44 @@ for /F %%i in ('dir /b /a "%cd%\*"') do (
 	goto :eof
 )
 
+if "%isWE%"=="we" (
+	goto initWE
+)
+goto initInstallRDF
+
+:initWE
+echo     Init new WebExtension:
+echo {>manifest.json
+echo   "manifest_version": 2,>>manifest.json
+echo   "name": "testXPI",>>manifest.json
+echo   "description": "testXPI.",>>manifest.json
+echo   "version": "0.0.1",>>manifest.json
+echo.>>manifest.json
+echo   "applications": {>>manifest.json
+echo     "gecko": {>>manifest.json
+echo       "id": "testXPI@testXPI.addons.mozilla.org",>>manifest.json
+echo       "strict_min_version": "45.0.0">>manifest.json
+echo     }>>manifest.json
+echo   },>>manifest.json
+echo.>>manifest.json
+echo   "background": {>>manifest.json
+echo     "scripts": ["background.js"]>>manifest.json
+echo   }>>manifest.json
+echo }>>manifest.json
+
+if exist "%cd%\manifest.json" (
+	echo manifest.json ^(template^) was created!
+) else (
+	echo Error: manifest.json was not created!
+	goto :eof
+)
+
+echo.>background.js
+echo background.js ^(empty^) was created!
+
+goto :eof
+
+:initInstallRDF
 echo     Init new addon:
 echo ^<?xml version="1.0"?^>>install.rdf
 echo ^<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#">>install.rdf
