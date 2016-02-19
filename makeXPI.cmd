@@ -29,13 +29,66 @@ if "%~dp0"=="%cd%\" (
 	goto :eof
 )
 
+REM создать шаблон дополнения
+set isInit=%1
+if not "%isInit%"=="init" (
+	goto tryToUseExists
+)
+
+for /F %%i in ('dir /b /a "%cd%\*"') do (
+	echo Error: folder is not empty!
+	pause
+	goto :eof
+)
+
+echo     Init new addon:
+echo ^<?xml version="1.0"?^>>install.rdf
+echo ^<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#">>install.rdf
+echo 	xmlns:em="http://www.mozilla.org/2004/em-rdf#"^>>>install.rdf
+echo 	^<Description about="urn:mozilla:install-manifest"^>>>install.rdf
+echo 		^<em:id^>testXPI@testXPI.addons.mozilla.org^</em:id^>>>install.rdf
+echo 		^<em:version^>0.0.1^</em:version^>>>install.rdf
+echo 		^<em:name^>testXPI^</em:name^>>>install.rdf
+echo 		^<em:creator^>testXPI^</em:creator^>>>install.rdf
+echo 		^<em:description^>testXPI.^</em:description^>>>install.rdf
+echo 		^<em:type^>2^</em:type^>>>install.rdf
+echo 		^<em:bootstrap^>true^</em:bootstrap^>>>install.rdf
+echo 		^<!-- Firefox --^>>>install.rdf
+echo 		^<em:targetApplication^>>>install.rdf
+echo 			^<Description^>>>install.rdf
+echo 				^<em:id^>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}^</em:id^>>>install.rdf
+echo 				^<em:minVersion^>24.0a1^</em:minVersion^>>>install.rdf
+echo 				^<em:maxVersion^>*^</em:maxVersion^>>>install.rdf
+echo 			^</Description^>>>install.rdf
+echo 		^</em:targetApplication^>>>install.rdf
+echo 	^</Description^>>>install.rdf
+echo ^</RDF^>>>install.rdf
+
+if exist "%cd%\install.rdf" (
+	echo install.rdf ^(template^) was created!
+) else (
+	echo Error: install.rdf was not created!
+	goto :eof
+)
+
+echo.>bootstrap.js
+echo bootstrap.js ^(empty^) was created!
+
+echo.>chrome.manifest
+echo chrome.manifest ^(empty^) was created!
+
+goto :eof
+
+:tryToUseExists
 REM в папке должен быть install.rdf
 if not exist "%cd%\install.rdf" (
-	echo.
-	echo ЋиЁЎЄ : install.rdf ­Ґ ­ ©¤Ґ­.
-	rem Ошибка: install.rdf не найден.
-	rem Error: install.rdf not found!
-	goto :eof
+	if not exist "%cd%\manifest.json" (
+		echo.
+		echo ЋиЁЎЄ : install.rdf ­Ґ ­ ©¤Ґ­.
+		rem Ошибка: install.rdf не найден.
+		rem Error: install.rdf not found!
+		goto :eof
+	)
 )
 
 rem enabledelayedexpansion
@@ -158,7 +211,7 @@ REM общие параметры и "функции"
 
 :packXPI
 setlocal
-set _files=install.rdf *.manifest *.js *.jsm *.xul *.xml *.css *.png *.html *.properties license*  defaults modules components locale chrome idl lib data packages includes content skin
+set _files=install.rdf manifest.json *.manifest *.js *.jsm *.xul *.xml *.css *.png *.html *.properties license*  defaults modules components locale chrome idl lib data packages includes content skin
 set _out_xpi=%1
 start "7zip" /b /wait /low %archis% a -tzip -mx9 -mfb=258 -mpass=15 -- %_out_xpi% %_files%
 if errorlevel 1 (
@@ -198,6 +251,16 @@ set curdate=%year%-%month%-%day%
 set _out=%currentdir%-%curdate%.xpi
 
 set addonVersion=
+
+for /f "tokens=1,2 delims=:, " %%a in (
+	'type "manifest.json"^|find /i "version"'
+) do (
+	if %%~a==version (
+		set addonVersion=%%~b
+	)
+)
+if not "%addonVersion%"=="" goto addonVersionDone
+
 for /f "tokens=3 delims=<>" %%a in (
 	'type "install.rdf"^|find /i "<em:version>"'
 ) do set addonVersion=%%~a
@@ -343,6 +406,9 @@ echo user_pref("app.update.enabled", false);>> user.js
 echo user_pref("urlclassifier.updateinterval", 172800);>> user.js
 echo user_pref("startup.homepage_welcome_url", "about:blank");>> user.js
 
+echo user_pref("xpinstall.signatures.required", false);>> user.js
+echo user_pref("xpinstall.whitelist.required", false);>> user.js
+
 rem дополнительно
 rem перевести плагины в режим "click to play"
 echo. >> user.js
@@ -359,6 +425,15 @@ cd /d "%rundir%"
 REM т.к в install.rdf кроме ID дополнения есть ещё и ID программ с которыми
 REM совместимо это дополнение. Первый как правило и есть нужный ID.
 set addonID=
+
+for /f "tokens=1,2 delims=:, " %%a in (
+	'type "manifest.json"^|find /i "id"'
+) do (
+	if %%~a==id (
+		set addonID=%%~b&goto checkAddonID
+	)
+)
+
 for /f "tokens=3 delims=<>" %%a in (
 	'type "install.rdf"^|find /i "<em:id>"'
 ) do set addonID=%%a&goto checkAddonID
@@ -472,29 +547,35 @@ goto checkIsExistFirefox
 REM здесть нужно выставить свои пути к файлам если они есть
 REM или добавить ещё
 if "%firefox_bin%"=="esr" (
-	set firefox="F:\PAP\PortableApps\FirefoxPortableESR\App\Firefox\firefox.exe"
+	set firefox="D:\PAP\PortableApps\FirefoxPortableESR\App\Firefox\firefox.exe"
 	goto checkIsExistFirefox
 )
 if "%firefox_bin%"=="beta" (
-	set firefox="F:\PAP\PortableApps\FirefoxPortableTest\App\Firefox\firefox.exe"
+	set firefox="D:\PAP\PortableApps\FirefoxPortableTest\App\Firefox\firefox.exe"
 	goto checkIsExistFirefox
 )
 if "%firefox_bin%"=="aurora" (
-	set firefox="F:\PAP\PortableApps\FirefoxPortableAurora\App\core\firefox.exe"
+	set firefox="D:\PAP\PortableApps\FirefoxPortableAurora\App\core\firefox.exe"
 	goto checkIsExistFirefox
 )
 if "%firefox_bin%"=="nightly" (
-	set firefox="F:\PAP\PortableApps\FirefoxPortableNightly\App\firefox\firefox.exe"
+	set firefox="D:\PAP\PortableApps\FirefoxPortableNightly\App\firefox\firefox.exe"
 	goto checkIsExistFirefox
 )
 if "%firefox_bin%"=="nightly64" (
-	set firefox="F:\PAP\PortableApps\FirefoxPortableNightly64\App\core\firefox.exe"
+	set firefox="D:\PAP\PortableApps\FirefoxPortableNightly64\App\core\firefox.exe"
 	goto checkIsExistFirefox
 )
 
 rem SeaMonkey
 if "%firefox_bin%"=="sm" (
-	set firefox="F:\PAP\PortableApps\SeaMonkeyPortable\App\SeaMonkey\seamonkey.exe"
+	set firefox="D:\PAP\PortableApps\SeaMonkeyPortable\App\SeaMonkey\seamonkey.exe"
+	goto checkIsExistFirefox
+)
+
+rem PaleMoon
+if "%firefox_bin%"=="pm" (
+	set firefox="D:\PAP\PortableApps\PalemoonPortable\Bin\Palemoon\palemoon.exe"
 	goto checkIsExistFirefox
 )
 
