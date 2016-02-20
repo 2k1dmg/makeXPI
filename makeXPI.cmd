@@ -48,24 +48,28 @@ if "%isWE%"=="we" (
 goto initInstallRDF
 
 :initWE
+echo.
 echo     Init new WebExtension:
-echo {>manifest.json
-echo   "manifest_version": 2,>>manifest.json
-echo   "name": "testXPI",>>manifest.json
-echo   "description": "testXPI.",>>manifest.json
-echo   "version": "0.0.1",>>manifest.json
-echo.>>manifest.json
-echo   "applications": {>>manifest.json
-echo     "gecko": {>>manifest.json
-echo       "id": "testXPI@testXPI.addons.mozilla.org",>>manifest.json
-echo       "strict_min_version": "45.0.0">>manifest.json
-echo     }>>manifest.json
-echo   },>>manifest.json
-echo.>>manifest.json
-echo   "background": {>>manifest.json
-echo     "scripts": ["background.js"]>>manifest.json
-echo   }>>manifest.json
-echo }>>manifest.json
+echo.
+(
+echo {
+echo   "manifest_version": 2,
+echo   "name": "testXPI",
+echo   "description": "testXPI.",
+echo   "version": "0.0.1",
+echo.
+echo   "applications": {
+echo     "gecko": {
+echo       "id": "testXPI@testXPI.addons.mozilla.org",
+echo       "strict_min_version": "45.0.0"
+echo     }
+echo   },
+echo.
+echo   "background": {
+echo     "scripts": ["background.js"]
+echo   }
+echo }
+)>manifest.json
 
 if exist "%cd%\manifest.json" (
 	echo manifest.json ^(template^) was created!
@@ -80,33 +84,37 @@ echo background.js ^(empty^) was created!
 goto :eof
 
 :initInstallRDF
-echo     Init new addon:
+echo.
+echo     Init new bootstrapped addon:
+echo.
 
 if "%isWE%"=="rdf2" (
 	goto initInstallRDF2
 )
 
-echo ^<?xml version="1.0"?^>>install.rdf
-echo ^<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#">>install.rdf
-echo 	xmlns:em="http://www.mozilla.org/2004/em-rdf#"^>>>install.rdf
-echo 	^<Description about="urn:mozilla:install-manifest"^>>>install.rdf
-echo 		^<em:id^>testXPI@testXPI.addons.mozilla.org^</em:id^>>>install.rdf
-echo 		^<em:version^>0.0.1^</em:version^>>>install.rdf
-echo 		^<em:name^>testXPI^</em:name^>>>install.rdf
-echo 		^<em:creator^>testXPI^</em:creator^>>>install.rdf
-echo 		^<em:description^>testXPI.^</em:description^>>>install.rdf
-echo 		^<em:type^>2^</em:type^>>>install.rdf
-echo 		^<em:bootstrap^>true^</em:bootstrap^>>>install.rdf
-echo 		^<!-- Firefox --^>>>install.rdf
-echo 		^<em:targetApplication^>>>install.rdf
-echo 			^<Description^>>>install.rdf
-echo 				^<em:id^>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}^</em:id^>>>install.rdf
-echo 				^<em:minVersion^>24.0a1^</em:minVersion^>>>install.rdf
-echo 				^<em:maxVersion^>*^</em:maxVersion^>>>install.rdf
-echo 			^</Description^>>>install.rdf
-echo 		^</em:targetApplication^>>>install.rdf
-echo 	^</Description^>>>install.rdf
-echo ^</RDF^>>>install.rdf
+(
+echo ^<?xml version="1.0"?^>
+echo ^<RDF xmlns="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+echo 	xmlns:em="http://www.mozilla.org/2004/em-rdf#"^>
+echo 	^<Description about="urn:mozilla:install-manifest"^>
+echo 		^<em:id^>testXPI@testXPI.addons.mozilla.org^</em:id^>
+echo 		^<em:version^>0.0.1^</em:version^>
+echo 		^<em:name^>testXPI^</em:name^>
+echo 		^<em:creator^>testXPI^</em:creator^>
+echo 		^<em:description^>testXPI.^</em:description^>
+echo 		^<em:type^>2^</em:type^>
+echo 		^<em:bootstrap^>true^</em:bootstrap^>
+echo 		^<!-- Firefox --^>
+echo 		^<em:targetApplication^>
+echo 			^<Description^>
+echo 				^<em:id^>{ec8030f7-c20a-464f-9b0e-13a3a9e97384}^</em:id^>
+echo 				^<em:minVersion^>24.0^</em:minVersion^>
+echo 				^<em:maxVersion^>42.0^</em:maxVersion^>
+echo 			^</Description^>
+echo 		^</em:targetApplication^>
+echo 	^</Description^>
+echo ^</RDF^>
+)>install.rdf
 
 goto doneInstallRDF
 
