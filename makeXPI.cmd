@@ -290,9 +290,9 @@ REM общие параметры и "функции"
 
 :packXPI
 setlocal
-set _files=install.rdf manifest.json *.manifest *.js *.jsm *.xul *.xml *.css *.png *.html *.properties license*  defaults modules components locale chrome idl lib data packages includes content skin
+set _exclude=-x!*.xpi -x!*.md -x!*gitignore -x!*hgignore -x!*hgtags -x!*.bat -x!*.cmd -x!*.sh -x!build.xml
 set _out_xpi=%1
-start "7zip" /b /wait /low %archis% a -tzip -mx9 -mfb=258 -mpass=15 -- %_out_xpi% %_files%
+start "7zip" /b /wait /low %archis% a -tzip %_out_xpi% * -r %_exclude%
 if errorlevel 1 (
 	echo.
 	echo ЋиЁЎЄ :  аеЁў жЁп ­Ґ г¤ « бм.
@@ -304,7 +304,7 @@ if errorlevel 1 (
 	echo.
 	echo _out_tmp: %_out_tmp%
 	echo.
-	echo _files: %_files%
+	echo _exclude: %_exclude%
 	echo.
 	exit /b 1
 )
@@ -331,7 +331,7 @@ set _out=%currentdir%-%curdate%.xpi
 
 set addonVersion=
 
-for /f "tokens=1,2 delims=:, " %%a in (
+for /f "tokens=1,2 delims=:,	 " %%a in (
 	'type "manifest.json"^|find /i "version"'
 ) do (
 	if %%~a==version (
@@ -505,7 +505,7 @@ REM т.к в install.rdf кроме ID дополнения есть ещё и ID программ с которыми
 REM совместимо это дополнение. Первый как правило и есть нужный ID.
 set addonID=
 
-for /f "tokens=1,2 delims=:, " %%a in (
+for /f "tokens=1,2 delims=:,	 " %%a in (
 	'type "manifest.json"^|find /i "id"'
 ) do (
 	if %%~a==id (
