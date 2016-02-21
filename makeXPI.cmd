@@ -309,6 +309,32 @@ if errorlevel 1 (
 	exit /b 1
 )
 REM goto :eof
+if not exist "chrome.manifest" exit /b 0
+rem pack JAR
+set jarTempFolder=jarTempFolder%year%%month%%day%%hour%%minute%%second%
+if exist "%temp%\%jarTempFolder%" rd /s /q "%temp%\%jarTempFolder%"
+md "%temp%\%jarTempFolder%"
+set jarList=%temp%\%jarTempFolder%\jar_list.txt
+echo. 2>"%jarList%"
+for /f "tokens=1,2 delims=:!." %%a in (
+	'type "chrome.manifest"^|find /i ".jar"'
+) do (
+	if exist %%~b (
+		find "%%~b" "%jarList%">nul
+		if errorlevel 1 (
+			echo %%~b>>"%jarList%"
+		)
+	)
+)
+for /f "usebackq tokens=*" %%a in ("%jarList%") do (
+	%archis% a -tzip %temp%\%jarTempFolder%\%%~a.jar .\%%~a\* %_exclude%
+	%archis% d %_out_xpi% %%~a
+	pushd %temp%\%jarTempFolder%
+	%archis% a %_out_xpi% %%~a.jar
+	popd
+)
+rd /s /q "%temp%\%jarTempFolder%"
+
 exit /b 0
 
 :packAddon
@@ -357,7 +383,7 @@ endlocal & set addonVersion=%_addonVersion%
 :addonVersionDone
 
 if not "%addonVersion%"=="" (
-	set _out=%currentdir%-%addonVersion%-%curdate%.xpi
+	set _out=%currentdir%-%addonVersion%.xpi
 )
 
 rem временный файла во временной папке Windows
@@ -541,6 +567,9 @@ call :packXPI "%_out%"
 if errorlevel 1 goto :eof
 
 set addonUnpack=
+
+if not exist "install.rdf" goto addonUnpackDone
+
 for /f "tokens=3 delims=<>" %%a in (
 	'type "install.rdf"^|find /i "<em:unpack>"'
 ) do set addonUnpack=%%a
