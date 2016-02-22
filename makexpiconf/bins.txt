@@ -1,0 +1,2 @@
+fx=d:\progs\fx\firefox.exe
+beta=d:\progs\fx beta\firefox.exe

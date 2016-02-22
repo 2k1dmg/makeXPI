@@ -6,6 +6,14 @@
 - `makexpi init rdf2` - тоже что и `makexpi init`, но с другим видом `install.rdf`.
 - `makexpi init we` - создаст шаблон `manifest.json` и пустой файл `background.js`.
 - `makexpi run` - создаст профиль во временной папке Windows в нём создаст файл настроек и дополнение. Это не затронет дополнение в текущей папке.
-- `makexpi run [esr, sm...]` - тоже что и `makexpi run`, но с выбором конкретного браузера прописанного в файле `makeXPI.cmd`. Пути к файлам нужно добавить самому. Приметы `makexpi run esr`, `makexpi run pm`
+- `makexpi run [esr, sm...]` - тоже что и `makexpi run`, но с выбором конкретного браузера прописанного в файле `makeXPI.cmd`. Пути к файлам нужно добавить самому. Примеры `makexpi run esr`, `makexpi run pm` или же указать путь к `exe` файлу `makexpi run "d:\progs\fx\firefox.exe"`.
+
+Если в той же папке что и `makeXPI.cmd` создать папку `makexpiconf`, то файлы `install.rdf`, `install2.rdf`, `manifest.json`, `user.js` будут использоваться как шаблоны, а `bins.txt` для задания путей к файлам запуска
+```
+fx=d:\progs\fx\firefox.exe
+beta=d:\progs\fx beta\firefox.exe
+tb=d:\progs\tb\tb.exe,d:\cmdtools\makexpiconf\user_tb.js
+```
+Через запятую можно указать `user.js` для конкретного `exe` файла.
 
 Для упаковки нужен установленный 7-zip или 7za.exe в том же каталоге что и `makeXPI.cmd`.

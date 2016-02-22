@@ -30,8 +30,8 @@ if "%~dp0"=="%cd%\" (
 )
 
 REM создать шаблон дополнения
-set isInit=%1
-set isWE=%2
+set isInit=%~1
+set isWE=%~2
 if not "%isInit%"=="init" (
 	goto tryToUseExists
 )
@@ -51,6 +51,12 @@ goto initInstallRDF
 echo.
 echo     Init new WebExtension:
 echo.
+
+if exist "%~dp0makexpiconf\manifest.json" (
+	copy "%~dp0makexpiconf\manifest.json" "%cd%\manifest.json"
+	goto manifestJsonDone
+)
+
 (
 echo {
 echo   "manifest_version": 2,
@@ -71,6 +77,7 @@ echo   }
 echo }
 )>manifest.json
 
+:manifestJsonDone
 if exist "%cd%\manifest.json" (
 	echo manifest.json ^(template^) was created!
 ) else (
@@ -90,6 +97,11 @@ echo.
 
 if "%isWE%"=="rdf2" (
 	goto initInstallRDF2
+)
+
+if exist "%~dp0makexpiconf\install.rdf" (
+	copy "%~dp0makexpiconf\install.rdf" "%cd%\install.rdf"
+	goto doneInstallRDF
 )
 
 (
@@ -119,6 +131,12 @@ echo ^</RDF^>
 goto doneInstallRDF
 
 :initInstallRDF2
+
+if exist "%~dp0makexpiconf\install2.rdf" (
+	copy "%~dp0makexpiconf\install2.rdf" "%cd%\install.rdf"
+	goto doneInstallRDF
+)
+
 (
 echo ^<?xml version="1.0"?^>
 echo ^<RDF:RDF xmlns:em="http://www.mozilla.org/2004/em-rdf#"
@@ -277,7 +295,7 @@ set hour=%timeNow:~0,2%
 set minute=%timeNow:~3,2%
 set second=%timeNow:~6,2%
 
-set isRun=%1
+set isRun=%~1
 
 if "%isRun%"=="run" (
 	goto packAndRun
@@ -357,6 +375,7 @@ set _out=%currentdir%-%curdate%.xpi
 
 set addonVersion=
 
+if not exist "manifest.json" goto getVersionByInstallRDF
 for /f "tokens=1,2 delims=:,	 " %%a in (
 	'type "manifest.json"^|find /i "version"'
 ) do (
@@ -366,11 +385,17 @@ for /f "tokens=1,2 delims=:,	 " %%a in (
 )
 if not "%addonVersion%"=="" goto addonVersionDone
 
+:getVersionByInstallRDF
 for /f "tokens=3 delims=<>" %%a in (
 	'type "install.rdf"^|find /i "<em:version>"'
 ) do set addonVersion=%%~a
-
 if not "%addonVersion%"=="" goto addonVersionDone
+
+for /f "tokens=3 delims=<>" %%a in (
+	'type "install.rdf"^|find /i "<version>"'
+) do set addonVersion=%%~a
+if not "%addonVersion%"=="" goto addonVersionDone
+
 setlocal EnableDelayedExpansion
 for /f "tokens=* usebackq" %%a in (
 	`type "install.rdf"^|find /i "em:version"`
@@ -475,6 +500,11 @@ echo "%temp%\%runTempProf%"
 
 md extensions
 
+if exist "%~dp0makexpiconf\user.js" (
+	copy "%~dp0makexpiconf\user.js" "%temp%\%runTempProf%\user.js"
+	goto userJsDone
+)
+
 REM настройки user.js взятые из Addon SDK 1.6
 echo. > user.js
 
@@ -522,6 +552,7 @@ echo user_pref("plugin.state.flash", 1);>> user.js
 REM отключить знакомство с новинками
 echo user_pref("browser.uitour.enabled", false);>> user.js
 
+:userJsDone
 REM ----------------------------------------------------------------------------
 REM создание дополнения
 
@@ -541,6 +572,10 @@ for /f "tokens=1,2 delims=:,	 " %%a in (
 
 for /f "tokens=3 delims=<>" %%a in (
 	'type "install.rdf"^|find /i "<em:id>"'
+) do set addonID=%%a&goto checkAddonID
+
+for /f "tokens=3 delims=<>" %%a in (
+	'type "install.rdf"^|find /i "<id>"'
 ) do set addonID=%%a&goto checkAddonID
 
 setlocal EnableDelayedExpansion
@@ -573,8 +608,13 @@ if not exist "install.rdf" goto addonUnpackDone
 for /f "tokens=3 delims=<>" %%a in (
 	'type "install.rdf"^|find /i "<em:unpack>"'
 ) do set addonUnpack=%%a
-
 if not "%addonUnpack%"=="" goto addonUnpackDone
+
+for /f "tokens=3 delims=<>" %%a in (
+	'type "install.rdf"^|find /i "<unpack>"'
+) do set addonUnpack=%%a
+if not "%addonUnpack%"=="" goto addonUnpackDone
+
 setlocal EnableDelayedExpansion
 for /f "tokens=* usebackq" %%a in (
 	`type "install.rdf"^|find /i "em:unpack"`
@@ -627,7 +667,7 @@ REM дополнительный параметр
 REM makexpi run beta
 REM или в кавычках путь к firefox.exe
 REM makexpi run "F:\PAP\PortableApps\FirefoxPortableNightly\App\core\firefox.exe"
-set firefox_bin=%2
+set firefox_bin=%~2
 
 if "%firefox_bin%"=="" goto getFirefox
 goto getFirefoxParam2
@@ -648,44 +688,58 @@ if errorlevel 1 (
 set firefoxPath=
 for /f "tokens=2*" %%a in ('reg query "%firefoxRegPath%" /v path ^| find "REG_SZ"') do set firefoxPath=%%b
 if "%firefoxPath:~-1%"=="\" set firefoxPath=%firefoxPath:~0,-1%
-set firefox="%firefoxPath%\firefox.exe"
+set firefox=%firefoxPath%\firefox.exe
 goto checkIsExistFirefox
 
 :getFirefoxParam2
+
+if not exist "%~dp0makexpiconf\bins.txt" goto useBuiltInConf
+
+for /f "tokens=1,2* delims==" %%a in ('type "%~dp0makexpiconf\bins.txt"') do (
+	if %firefox_bin%==%%~a (
+		set firefox=%%~b
+		goto checkIsExistFirefox
+	)
+)
+goto skipBuiltInConf
+
+:useBuiltInConf
 REM здесть нужно выставить свои пути к файлам если они есть
 REM или добавить ещё
 if "%firefox_bin%"=="esr" (
-	set firefox="D:\PAP\PortableApps\FirefoxPortableESR\App\Firefox\firefox.exe"
+	set firefox=D:\PAP\PortableApps\FirefoxPortableESR\App\Firefox\firefox.exe
 	goto checkIsExistFirefox
 )
 if "%firefox_bin%"=="beta" (
-	set firefox="D:\PAP\PortableApps\FirefoxPortableTest\App\Firefox\firefox.exe"
+	set firefox=D:\PAP\PortableApps\FirefoxPortableTest\App\Firefox\firefox.exe
 	goto checkIsExistFirefox
 )
 if "%firefox_bin%"=="aurora" (
-	set firefox="D:\PAP\PortableApps\FirefoxPortableAurora\App\core\firefox.exe"
+	set firefox=D:\PAP\PortableApps\FirefoxPortableAurora\App\core\firefox.exe
 	goto checkIsExistFirefox
 )
 if "%firefox_bin%"=="nightly" (
-	set firefox="D:\PAP\PortableApps\FirefoxPortableNightly\App\firefox\firefox.exe"
+	set firefox=D:\PAP\PortableApps\FirefoxPortableNightly\App\firefox\firefox.exe
 	goto checkIsExistFirefox
 )
 if "%firefox_bin%"=="nightly64" (
-	set firefox="D:\PAP\PortableApps\FirefoxPortableNightly64\App\core\firefox.exe"
+	set firefox=D:\PAP\PortableApps\FirefoxPortableNightly64\App\core\firefox.exe
 	goto checkIsExistFirefox
 )
 
 rem SeaMonkey
 if "%firefox_bin%"=="sm" (
-	set firefox="D:\PAP\PortableApps\SeaMonkeyPortable\App\SeaMonkey\seamonkey.exe"
+	set firefox=D:\PAP\PortableApps\SeaMonkeyPortable\App\SeaMonkey\seamonkey.exe
 	goto checkIsExistFirefox
 )
 
 rem PaleMoon
 if "%firefox_bin%"=="pm" (
-	set firefox="D:\PAP\PortableApps\PalemoonPortable\Bin\Palemoon\palemoon.exe"
+	set firefox=D:\PAP\PortableApps\PalemoonPortable\Bin\Palemoon\palemoon.exe
 	goto checkIsExistFirefox
 )
+
+:skipBuiltInConf
 
 if not "%firefox_bin%"=="" (
 	set firefox=%firefox_bin%
@@ -695,9 +749,9 @@ if not "%firefox_bin%"=="" (
 goto startFirefox
 
 :checkIsExistFirefox
-if not exist %firefox% (
+if not exist "%firefox%" (
 	echo.
-	echo ЋиЁЎЄ : %firefox% ­Ґ ­ ©¤Ґ­!
+	echo ЋиЁЎЄ : "%firefox%" ­Ґ ­ ©¤Ґ­!
 	rem Ошибка: %firefox% не найден!
 	rem Error: %firefox% not found!
 	goto cleanRunTempProf
@@ -709,7 +763,7 @@ echo.
 echo Џгвм Є Firefox:
 rem Путь к Firefox:
 rem Firefox path:
-echo %firefox%
+echo "%firefox%"
 echo.
 
 REM если в том же каталоге в котором находится makeXPI есть Console Redirector
@@ -717,7 +771,7 @@ REM то вывод в консоль будет через него. Иначе можно добавить -console к
 REM параметрам и при запуске появится дополнительная консоль Firefox
 REM https://developer.mozilla.org/en-US/docs/Web/API/Window.dump
 if exist "%~dp0Console Redirector\Console Redirector.exe" goto ConsoleRedirector
-start "Firefox" /b /wait %firefox% -no-remote -profile "%temp%\%runTempProf%"
+start "Firefox" /b /wait "%firefox%" -no-remote -profile "%temp%\%runTempProf%"
 goto cleanRunTempProf
 
 :ConsoleRedirector
@@ -726,7 +780,7 @@ echo ===========================================================================
 echo - Start - Console Redirector -
 echo ===========================================================================
 echo.
-start "Firefox" /b /wait "%~dp0Console Redirector\Console Redirector.exe" %firefox% -no-remote -profile "%temp%\%runTempProf%"
+start "Firefox" /b /wait "%~dp0Console Redirector\Console Redirector.exe" "%firefox%" -no-remote -profile "%temp%\%runTempProf%"
 echo.
 echo ===========================================================================
 echo - End - Console Redirector -
