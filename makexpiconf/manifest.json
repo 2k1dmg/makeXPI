@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "testXPI",
+  "description": "testXPI.",
+  "version": "0.1",
+
+  "applications": {
+    "gecko": {
+      "id": "testXPI@testXPI.addons.mozilla.org",
+      "strict_min_version": "45.0.0"
+    }
+  },
+
+  "background": {
+    "scripts": ["background.js"]
+  }
+}
