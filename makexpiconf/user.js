@@ -32,3 +32,4 @@ user_pref("browser.safebrowsing.provider.0.updateURL", "http://localhost/safebro
 user_pref("plugin.default.state", 1);
 user_pref("plugin.state.flash", 1);
 user_pref("browser.uitour.enabled", false);
+user_pref("browser.shell.checkDefaultBrowser", false);
