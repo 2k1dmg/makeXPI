@@ -695,9 +695,12 @@ goto checkIsExistFirefox
 
 if not exist "%~dp0makexpiconf\bins.txt" goto useBuiltInConf
 
-for /f "tokens=1,2* delims==" %%a in ('type "%~dp0makexpiconf\bins.txt"') do (
+for /f "tokens=1,2,3* delims==," %%a in ('type "%~dp0makexpiconf\bins.txt"') do (
 	if %firefox_bin%==%%~a (
 		set firefox=%%~b
+		if exist "%%~c" (
+			copy /y "%%~c" "%temp%\%runTempProf%\user.js"
+		)
 		goto checkIsExistFirefox
 	)
 )
