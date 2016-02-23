@@ -19,8 +19,9 @@ tb=d:\progs\tb\tb.exe,d:\cmdtools\makexpiconf\user_tb.js
 `param.txt` - для задания параметров.
 ```
 ;firefox_bin=
+;7z_bin=d:\progs\7za.exe
 7z_add_to_exclude=-x!build.xml -x!*.py -x!*.pl
 ;7z_exclude=
 ```
 
-Для упаковки нужен установленный 7-zip или 7za.exe в том же каталоге что и `makeXPI.cmd`.
+Для упаковки нужен установленный 7-zip или 7za.exe в том же каталоге что и `makeXPI.cmd` или через параметр `7z_bin`.

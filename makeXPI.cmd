@@ -215,6 +215,23 @@ rem -------------------------------------------
 
 set archby=
 
+if not exist "%~dp0makexpiconf\param.txt" goto skipParam_7z_bin
+for /f "tokens=1,2* delims==" %%a in ('type "%~dp0makexpiconf\param.txt"') do (
+	if %%~a==7z_bin (
+		if exist "%%~b" (
+			set archis="%%~b"
+			set archby=param.txt
+			goto archcomlp1
+		)
+		echo.
+		echo Check the "7z_bin" in "%~dp0makexpiconf\param.txt"
+		echo "%%~b"
+		echo --- not exist!
+		echo.
+	)
+)
+:skipParam_7z_bin
+
 if "%archis%"=="" goto autoarch
 if exist "%archis%" (
 	set archby=user
@@ -572,6 +589,7 @@ REM т.к в install.rdf кроме ID дополнения есть ещё и ID программ с которыми
 REM совместимо это дополнение. Первый как правило и есть нужный ID.
 set addonID=
 
+if not exist "manifest.json" goto skipManifestJson_getAddonID
 for /f "tokens=1,2 delims=:,	 " %%a in (
 	'type "manifest.json"^|find /i "id"'
 ) do (
@@ -579,6 +597,7 @@ for /f "tokens=1,2 delims=:,	 " %%a in (
 		set addonID=%%~b&goto checkAddonID
 	)
 )
+:skipManifestJson_getAddonID
 
 for /f "tokens=3 delims=<>" %%a in (
 	'type "install.rdf"^|find /i "<em:id>"'
@@ -685,12 +704,14 @@ goto getFirefoxParam2
 :getFirefox
 if not "%firefox%"=="" goto checkIsExistFirefox
 
+if not exist "%~dp0makexpiconf\param.txt" goto skipParam_firefox_bin
 for /f "tokens=1,2* delims==" %%a in ('type "%~dp0makexpiconf\param.txt"') do (
 	if %%~a==firefox_bin (
 		set firefox=%%~b
 		goto checkIsExistFirefox
 	)
 )
+:skipParam_firefox_bin
 
 echo.
 set firefoxRegPath=HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\firefox.exe
