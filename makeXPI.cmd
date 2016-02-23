@@ -308,7 +308,17 @@ REM общие параметры и "функции"
 
 :packXPI
 setlocal
-set _exclude=-x!*.xpi -x!*.md -x!*gitignore -x!*hgignore -x!*hgtags -x!*.bat -x!*.cmd -x!*.sh -x!build.xml
+set _exclude=-x!*.xpi -x!*.md -x!*gitignore -x!*gitattributes -x!*hgignore -x!*hgtags -x!*.bat -x!*.cmd -x!*.sh
+if not exist "%~dp0makexpiconf\param.txt" goto skipParam_exclude
+for /f "tokens=1,2* delims==" %%a in ('type "%~dp0makexpiconf\param.txt"') do (
+	if %%~a==7z_add_to_exclude (
+		set _exclude=%_exclude% %%~b
+	)
+	if %%~a==7z_exclude (
+		set _exclude=%%~b
+	)
+)
+:skipParam_exclude
 set _out_xpi=%1
 start "7zip" /b /wait /low %archis% a -tzip %_out_xpi% * -r %_exclude%
 if errorlevel 1 (
@@ -674,6 +684,13 @@ goto getFirefoxParam2
 
 :getFirefox
 if not "%firefox%"=="" goto checkIsExistFirefox
+
+for /f "tokens=1,2* delims==" %%a in ('type "%~dp0makexpiconf\param.txt"') do (
+	if %%~a==firefox_bin (
+		set firefox=%%~b
+		goto checkIsExistFirefox
+	)
+)
 
 echo.
 set firefoxRegPath=HKLM\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\firefox.exe
