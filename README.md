@@ -19,6 +19,7 @@ tb=d:\progs\tb\tb.exe,d:\cmdtools\makexpiconf\user_tb.js
 `param.txt` - для задания параметров.
 ```
 ;firefox_bin=
+;7z_bin=d:\progs\7za.exe
 7z_add_to_exclude=-x!build.xml -x!*.py -x!*.pl
 ;7z_exclude=
 ```

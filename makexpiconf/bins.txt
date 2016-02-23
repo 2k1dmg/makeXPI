@@ -1,2 +1,3 @@
 fx=d:\progs\fx\firefox.exe
 beta=d:\progs\fx beta\firefox.exe
+tb=d:\progs\tb\tb.exe,d:\cmdtools\makexpiconf\user_tb.js
